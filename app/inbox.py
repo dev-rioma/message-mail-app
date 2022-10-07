@@ -2,6 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app, send_file
 )
 
+
 from app.auth import login_required
 from app.db import get_db
 
@@ -17,8 +18,10 @@ def getDB():
 @login_required
 def show():
     db = get_db()
+    # from pdb import set_trace
+    # set_trace()
     messages = db.execute(
-        'SELECT * FROM message'
+        'select * from message INNER JOIN user ON message.from_id = user.id where to_id= ?', (g.user['id'],)     
     ).fetchall()
 
     return render_template('inbox/show.html', messages=messages)
